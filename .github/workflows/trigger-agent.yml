@@ -26,6 +26,7 @@ jobs:
         run: |
           curl -s -X POST "https://ziaagents.zoho.in/ziaagents/api/v1/agents/query" \
             -H "X-ZIAAGENTS-ORG: ${{ secrets.ZIA_ORG_ID }}" \
+            -H "X-ZIAAGENTS-AGENT-ID: 8992000000002078" \
             -H "X-ZIAAGENTS-AGENT-SESSION-ID: gh-session-$(date +%s)" \
             -H "Authorization: Zoho-oauthtoken ${{ steps.get_token.outputs.access_token }}" \
             -H "Content-Type: application/json" \
