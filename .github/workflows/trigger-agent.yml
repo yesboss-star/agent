@@ -2,7 +2,7 @@ name: Trigger Zia Mail Intent Agent
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
