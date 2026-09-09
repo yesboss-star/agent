@@ -1,0 +1,35 @@
+name: Trigger Zia Mail Intent Agent
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  call-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get fresh access token
+        id: get_token
+        run: |
+          RESPONSE=$(curl -s -X POST "https://accounts.zoho.in/oauth/v2/token" \
+            -d "client_id=${{ secrets.ZOHO_CLIENT_ID }}" \
+            -d "client_secret=${{ secrets.ZOHO_CLIENT_SECRET }}" \
+            -d "refresh_token=${{ secrets.ZOHO_REFRESH_TOKEN }}" \
+            -d "grant_type=refresh_token")
+          ACCESS_TOKEN=$(echo $RESPONSE | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+          echo "access_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Call Zia Agent API
+        run: |
+          curl -s -X POST "https://ziaagents.zoho.com/ziaagents/api/v1/agents/query" \
+            -H "X-ZIAAGENTS-ORG: ${{ secrets.ZIA_ORG_ID }}" \
+            -H "X-ZIAAGENTS-AGENT-SESSION-ID: gh-session-$(date +%s)" \
+            -H "Authorization: Zoho-oauthtoken ${{ steps.get_token.outputs.access_token }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "query": "Check the hiring folder for new unread candidate emails and classify their intent.",
+              "reasoning": false,
+              "attachments": [],
+              "systemArgs": {}
+            }'
