@@ -24,12 +24,10 @@ jobs:
 
       - name: Call Zia Agent API
         run: |
-          SESSION_ID=$(uuidgen)
-          echo "Using session ID: $SESSION_ID"
           curl -s -X POST "https://ziaagents.zoho.in/ziaagents/api/v1/agents/query" \
             -H "X-ZIAAGENTS-ORG: ${{ secrets.ZIA_ORG_ID }}" \
             -H "X-ZIAAGENTS-AGENT-ID: 8992000000002078" \
-            -H "X-ZIAAGENTS-AGENT-SESSION-ID: $SESSION_ID" \
+            -H "X-ZIAAGENTS-AGENT-VERSION-ID: 8992000000002080" \
             -H "Authorization: Zoho-oauthtoken ${{ steps.get_token.outputs.access_token }}" \
             -H "Content-Type: application/json" \
             -d '{
