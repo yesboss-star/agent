@@ -17,7 +17,10 @@ jobs:
             -d "client_secret=${{ secrets.ZOHO_CLIENT_SECRET }}" \
             -d "refresh_token=${{ secrets.ZOHO_REFRESH_TOKEN }}" \
             -d "grant_type=refresh_token")
+          echo "Full token response: $RESPONSE"
           ACCESS_TOKEN=$(echo $RESPONSE | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4)
+          echo "Token length: ${#ACCESS_TOKEN}"
+          echo "Token first 15 chars: ${ACCESS_TOKEN:0:15}"
           echo "access_token=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
 
       - name: Call Zia Agent API
